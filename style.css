@@ -1,0 +1,17 @@
+#gridContainer {
+    display: grid;
+    grid-template-columns: 5% 5% 5% 5%;
+    grid-template-rows: 40% 40% 40% 40%;
+    grid-column-gap: 0;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.gridItem {
+    
+    text-align: center;
+}
+
+#screen {
+    text-align: center;
+}
