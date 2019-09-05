@@ -1,62 +1,124 @@
-//Set necessary variables
-let a;  //first inputted number
-let b; //second inputted number
-let screen = ""; //stores numbers that have been entered, and outputs to screen
-let htmlScreen = document.getElementById("screen");
-//Adds all event listeners to buttons
-window.onload = function () {
-    let numbers = document.getElementsByClassName("number");
-    let clear = document.getElementById("C")
-    clear.addEventListener("click", clearScreen);
-}
-
-//Adds button value to calculator display
-function displayAdd(value) {
-    screen += value;
-    document.getElementById("screen").innerHTML = screen;
-}
-
-//Clears calculator screen
-function clearScreen() {
-    document.getElementById("screen").innerHTML = "0";
-    screen = "";
-}
-
-//Adds two numbers
-function add(a, b) {
-    return a + b;
-}
-
-//Subtracts one number from another
-function subtract(a, b) {
-    return a - b;
-}
-
-//Multiplies two numbers
-function multiply(a, b) {
-    return a * b;
-}
-
-//Divides one number by another
-function divide(a, b) {
-    return a / b;
-}
-
-//Calls add, subtract, multiply, or divide functions based on input
-//function operate(htmlScreen) {
-   //let arr = Array.from(htmlScreen);
-    //let num1 = Number(arr[0]);
+//Calculator object keeps track of all the properties of the calculator
+const calculator = {   
+    displayValue: '0',  //What is being shown to the user
+    firstOperand: null,  //The first operand that is entered
+    waitingForSecondOperand: false,  //True/false check that is true if the first operand has been entered.
+    operator: null,
+  };
+  
+  //Inputs a number into the calculator's display
+  function inputDigit(digit) {
+    const { displayValue, waitingForSecondOperand } = calculator;  //Same as setting the variables displayValue and waitingForSecondOperand,
+    //but it takes those variables from the calculator object, and uses those values.
+  
+    if (waitingForSecondOperand === true) {
+      calculator.displayValue = digit;
+      calculator.waitingForSecondOperand = false;
+    } else {
+      calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;  //Same as saying "if calculator.displayValue is equal to zero, 
+      //make the value of it the digit.  Otherwise, display the current displayValue and the digit concatenated".
+    }
+  }
+  
+  //Inputs a decimal into the display.
+  function inputDecimal(dot) {
+      if (calculator.waitingForSecondOperand === true) return;  
     
-    //console.log(arr);
-    // if (op == "+") {
-    //     return add(a, b);
-    // } else if (op == "-") {
-    //     return subtract(a, b);
-    // } else if (op == "x") {
-    //     return multiply(a, b);
-    // } else if (op == "/") {
-    //     return divide(a, b);
-    // } else {
-    //     document.getElementById("screen").innerHTML = "Invalid operator";
-    // }
-//}
+    // If the `displayValue` does not contain a decimal point
+    if (!calculator.displayValue.includes(dot)) {
+      // Append the decimal point
+      calculator.displayValue += dot;
+    }
+  }
+  
+  //Uses an entered operator as the function argument and decides what to do with it
+  function handleOperator(nextOperator) {
+    const { firstOperand, displayValue, operator } = calculator //Takes these variable properties from the calculator object
+    const inputValue = parseFloat(displayValue); //The input value is equal to the display value parsed into a floating point number, 
+    //since it was a string before
+  
+    if (operator && calculator.waitingForSecondOperand)  {
+      calculator.operator = nextOperator;
+      return;
+    }
+  
+    if (firstOperand == null) {
+      calculator.firstOperand = inputValue; //If there is no previously entered value, set the first operand equal to inputValue
+    } else if (operator) { //If there is already an operator
+      const currentValue = firstOperand || 0;
+      const result = performCalculation[operator](currentValue, inputValue); //Runs performCalculation using the current value and the input value
+  
+      calculator.displayValue = String(result); //The calculator displays the result
+      calculator.firstOperand = result;  //VERY IMPORTANT: The first operand is set to the result, so that if the user wants to chain operations,
+      //they are able to do that.
+    }
+  
+    calculator.waitingForSecondOperand = true;  //After calculating/showing the result, in order to prepare for chaining operations,
+    //the calculator is now waiting for a second operand
+    calculator.operator = nextOperator; //and another operator
+  }
+  
+  //Performs calculations based on what the operator is
+  const performCalculation = { 
+    '/': (firstOperand, secondOperand) => firstOperand / secondOperand,
+  
+    '*': (firstOperand, secondOperand) => firstOperand * secondOperand,
+  
+    '+': (firstOperand, secondOperand) => firstOperand + secondOperand,
+  
+    '-': (firstOperand, secondOperand) => firstOperand - secondOperand,
+  
+    '=': (firstOperand, secondOperand) => secondOperand
+  };
+  
+  //Sets all calculator values to default
+  function resetCalculator() {
+    calculator.displayValue = '0';
+    calculator.firstOperand = null;
+    calculator.waitingForSecondOperand = false;
+    calculator.operator = null;
+  }
+  
+  //Updates display of calculator
+  function updateDisplay() {
+    const display = document.querySelector('.calculator-screen');
+    display.value = calculator.displayValue; //Value of the calculator-screen HTML element is equal to the value of the 
+    //calculator object's displayValue
+  }
+  
+  updateDisplay();
+  
+  //Adds event listeners to all calculator keys
+  const keys = document.querySelector('.calculator-keys'); //Sets a variable to use in this function
+  keys.addEventListener('click', (event) => {  //Uses a function to add an event listener to every member of the .calculator-keys class
+    const { target } = event;  //Same as saying "const target = event.target".  This goes into the event listener OBJECT, and takes the "target"
+    //property, which is just the HTML element that set off the event listener
+    if (!target.matches('button')) { //If the target is not a button, do nothing
+      return;
+    }
+  
+    if (target.classList.contains('operator')) { //If the target has "operator" in its class, run the handleOperator function on the target value
+      handleOperator(target.value);
+          updateDisplay();
+      return;
+    }
+  
+    if (target.classList.contains('decimal')) {
+      inputDecimal(target.value);
+          updateDisplay();
+      return;
+    }
+  
+    if (target.classList.contains('all-clear')) {
+      resetCalculator();
+          updateDisplay();
+      return;
+    }
+  
+//Very important that the calculator keys are all divided into categories, and each category has a specific function that runs when the even listener
+//is set off.  This is good for readability, simplicity, and organization (and sanity).
+
+    inputDigit(target.value); //This is basically adding an "else" statement.  If the target is not an operator, decimal, or all-clear, 
+    //run inputDigit on the value.
+    updateDisplay();
+  });
