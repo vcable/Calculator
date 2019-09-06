@@ -40,7 +40,7 @@ html {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
+    width: 350px;
   }
   
   .calculator-screen {
@@ -58,13 +58,15 @@ html {
   
   button {
     height: 60px;
+    width: 60px;
+    border-radius: 50%;
     background-color: #fff;
-    border-radius: 3px;
     border: 1px solid #c4c4c4;
     background-color: transparent;
     font-family: Calculator, sans-serif;
+    font-weight: bold;
     font-size: 2rem;
-    color: #333;
+    color: #668ad8;
     background-image: linear-gradient(to bottom,transparent,transparent 50%,rgba(0,0,0,.04));
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.05), inset 0 1px 0 0 rgba(255,255,255,.45), inset 0 -1px 0 0 rgba(255,255,255,.15), 0 1px 0 0 rgba(255,255,255,.15);
     text-shadow: 0 1px rgba(255,255,255,.4);
@@ -72,6 +74,11 @@ html {
   
   button:hover {
     background-color: #f7f9fa;
+  }
+
+  #equals {
+    border: 1px solid #c4c4c4;
+    border-radius: 5px;
   }
   
   .operator {
@@ -113,6 +120,10 @@ html {
     grid-gap: 20px;
     padding: 20px;
     background: white;
+  }
+
+  #tooLong {
+    font-size: 40px;
   }
 
 /* Push Effect */
