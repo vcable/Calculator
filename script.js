@@ -68,6 +68,19 @@ function handleOperator(nextOperator) {
     calculator.operator = nextOperator; //and another operator
 }
 
+//Deletes previously entered digit from the display
+function deleteDigit() {
+    let displayValue = calculator.displayValue;
+
+    let displayValueArr = displayValue.split("");
+    displayValueArr.pop();   //Removes most recently added digit
+    calculator.displayValue =  displayValueArr.join("");
+
+    if (calculator.displayValue.length == 0) {  //If all digits have been removed, display zero
+        calculator.displayValue = "0";
+    }
+}
+
 //Performs calculations based on what the operator is
 const performCalculation = {
     '/': (firstOperand, secondOperand) => firstOperand / secondOperand,
@@ -121,6 +134,12 @@ keys.addEventListener('click', (event) => {  //Uses a function to add an event l
 
     if (target.classList.contains('all-clear')) {
         resetCalculator();
+        updateDisplay();
+        return;
+    }
+
+    if (target.classList.contains("backspace")) {
+        deleteDigit();
         updateDisplay();
         return;
     }
