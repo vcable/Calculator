@@ -1,5 +1,5 @@
 
-A simple, fully functional calculator created using HTML, CSS, and Javascript.  Still a work in progress.
+A simple, functional calculator created using HTML, CSS, and Javascript.  Still a work in progress.  
 
 CURRENT FEATURES: 
 
@@ -9,16 +9,19 @@ CURRENT FEATURES:
 
 -Currently rounds numbers to two decimal places
 
-TO ADD:
+-Has fully functional delete key (no keyboard input for this yet)
 
--Backspace button
+TO ADD:
 
 -Two displays (top display shows operands and operator, bottom display shows result of operations)
 
+-A scientific calculator mode (squaring, logarithms, etc)
+
+-At some point in the likely distant future I would like to add a graphing calculator, similar to what Desmos offers
 
 BUGS TO FIX:
 
--Keyboard input for operators (+, *, /, -, =) and "." is broken
+-Keyboard input for operators (+, *, /, -, =), Del, and "." is broken
 
 -For some reason it's impossible to start inputting through the keyboard before clicking at least one button with the mouse
 
