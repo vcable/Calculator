@@ -6,6 +6,14 @@ const calculator = {
     operator: null,
 };
 
+//The maximum amount of characters that can fit on the calculator screen
+const maxNumberLength = 14;
+
+//Rounds numbers
+function round(num) {
+    return Math.round(num * 100) / 100;
+}
+
 //Inputs a number into the calculator's display
 function inputDigit(digit) {
     const { displayValue, waitingForSecondOperand } = calculator;  //Same as setting the variables displayValue and waitingForSecondOperand,
@@ -14,9 +22,11 @@ function inputDigit(digit) {
     if (waitingForSecondOperand === true) {
         calculator.displayValue = digit;
         calculator.waitingForSecondOperand = false;
-    } else {
+    } else if (calculator.displayValue.length < maxNumberLength) {
         calculator.displayValue = displayValue === '0' ? digit : displayValue + digit;  //Same as saying "if calculator.displayValue is equal to zero, 
         //make the value of it the digit.  Otherwise, display the current displayValue and the digit concatenated".
+    } else {
+        return;
     }
 }
 
@@ -25,7 +35,7 @@ function inputDecimal(dot) {
     if (calculator.waitingForSecondOperand === true) return;
 
     // If the `displayValue` does not contain a decimal point
-    if (!calculator.displayValue.includes(dot || ".")) {
+    if (!calculator.displayValue.includes(dot)) {
         // Append the decimal point
         calculator.displayValue += dot;
     }
@@ -46,7 +56,7 @@ function handleOperator(nextOperator) {
         calculator.firstOperand = inputValue; //If there is no previously entered value, set the first operand equal to inputValue
     } else if (operator) { //If there is already an operator
         const currentValue = firstOperand || 0;
-        const result = performCalculation[operator](currentValue, inputValue); //Runs performCalculation using the current value and the input value
+        const result = round(performCalculation[operator](currentValue, inputValue)); //Runs performCalculation using the current value and the input value
 
         calculator.displayValue = String(result); //The calculator displays the result
         calculator.firstOperand = result;  //VERY IMPORTANT: The first operand is set to the result, so that if the user wants to chain operations,
@@ -126,8 +136,8 @@ keys.addEventListener('click', (event) => {  //Uses a function to add an event l
 //Adds event listener to all keys to listen for keyboard input
 
 keys.addEventListener("keydown", (event) => {
-   let value = "";
-//Operator keyboard input currently BROKEN
+    let value = "";
+    //Operator keyboard input currently BROKEN
     if (event.keyCode == 42) {
         value = "*";
         handleOperator(value);
